@@ -12,9 +12,7 @@ import { AiFillHome } from 'react-icons/ai'
 const UserDashboard = () => {
   const [auth] = useAuth();
 
-  console.log('auth', auth)
   return (
-
     <LayoutAdmin title="Dashboard - Zaurach.co">
       <AppTemplate>
         <Box p='3'>

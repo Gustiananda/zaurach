@@ -8,7 +8,6 @@ import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
 
 import "react-toastify/dist/ReactToastify.css";
-import Dashboard from "./pages/user/Dashboard";
 import PrivateRoute from "./components/Routes/Private";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import AdminRoute from "./components/Routes/AdminRoute";
@@ -17,21 +16,22 @@ import CreateCategory from "./pages/Admin/CreateCategory";
 import CreateProduct from "./pages/Admin/CreateProduct";
 import Users from "./pages/Admin/Users";
 import UserOrders from "./pages/user/Orders";
-import CreateOrder from "./pages/user/CreateOrder";
+// import CreateOrder from "./pages/user/CreateOrder";
 import Profile from "./pages/user/Profile";
-import Products from "./pages/Admin/Products";
+// import Products from "./pages/Admin/Products";
 import UpdateProduct from "./pages/Admin/UpdateProduct";
 import Search from "./pages/Search";
 import ProductDetails from "./pages/ProductDetails";
 import Categories from "./pages/Categories";
 import CategoryProduct from "./pages/CategoryProduct";
-import CartPage from "./pages/CartPage";
+// import CartPage from "./pages/CartPage";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminCustomer from "./pages/Admin/AdminCustomer";
 import AdminDetailCustomer from "./pages/Admin/AdminDetailCustomer";
 import AdminListProduct from "./pages/Admin/AdminListProduct";
 import AdminDetailProduk from "./pages/Admin/AdminDetailProduk";
 import AdminListShipping from "./pages/Admin/AdminListShipping";
+import AdminReport from "./pages/Admin/AdminReport";
 import { useEffect, useState } from "react";
 import UserDashboard from "./pages/user/UserDashboard";
 import UserBuktiPayment from "./pages/user/UserBuktiPayment";
@@ -90,29 +90,23 @@ function App() {
 
   return (
     <>
-      <Routes>
+      <Routes> 
+        {/* PUBLIC ROUTE       */}
         <Route path="/" element={<HomePage />} />
         <Route path="/product/:slug" element={<ProductDetails />} />
         <Route path="/categories" element={<Categories />} />
-        <Route path="/cart" element={<CartPage />} />
         <Route path="/category/:slug" element={<CategoryProduct />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/dashboard" element={<PrivateRoute />}>
-          <Route path="user" element={<Dashboard />} />
-          {/* <Route path="user/orders" element={<Orders />} /> */}
-          <Route path="user/create-order" element={<CreateOrder />} />
-          <Route path="user/profile" element={<Profile />} />
-        </Route>
         {/* USER FIX ROUTE */}
         <Route path="/user" element={<PrivateRoute />}>
           <Route path="dashboard" element={<UserDashboard />} />
           <Route path="cart" element={<CartUser />} />
-          <Route path="customer" element={<UserDashboard />} />
+          <Route path="customer" element={<Profile />} />
           <Route path="paymant" element={<UserPayment />} />
           <Route path="bukti-paymant" element={<UserBuktiPayment />} />
           <Route path="orders" element={<UserOrders />} />
-          <Route path="user/create-order" element={<CreateOrder />} />
-          <Route path="user/profile" element={<Profile />} />
+          {/* <Route path="user/create-order" element={<CreateOrder />} /> */}
+          {/* <Route path="user/profile" element={<Profile />} /> */}
         </Route>
         {/* ADMIN FIX ROUTE */}
         <Route path="/admin" element={<AdminRoute />}>
@@ -120,6 +114,7 @@ function App() {
           <Route path="customer" element={<AdminCustomer />} />
           <Route path="customer/:id" element={<AdminDetailCustomer />} />
           <Route path="produk" element={<AdminListProduct />} />
+          <Route path="statistik" element={<AdminReport />} />
           <Route path="produk/:id" element={<AdminDetailProduk />} />
           <Route path="create-category" element={<CreateCategory />} />
           <Route path="shipping" element={<AdminListShipping />} />
@@ -127,9 +122,8 @@ function App() {
           <Route path="product/:slug" element={<UpdateProduct />} />
           <Route path="users" element={<Users />} />
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="products" element={<Products />} />
+          {/* <Route path="products" element={<Products />} /> */}
         </Route>
-
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/login" element={<Login />} />

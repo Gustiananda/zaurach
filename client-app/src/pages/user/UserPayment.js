@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
-import { Divider, Box, Center, Flex, Text, VStack } from "@chakra-ui/layout";
+import { Divider, Box, Center, Flex, Text, VStack, Link } from "@chakra-ui/layout";
 import { Textarea } from "@chakra-ui/textarea";
 import React, { useState } from "react";
 import AppTemplate from "../../components/AppTemplate";
@@ -16,6 +16,10 @@ import { useAuth } from "../../context/auth";
 import toast from "react-hot-toast";
 import axios from "axios";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   createStandaloneToast,
 } from '@chakra-ui/react';
 const { Option } = Select;
@@ -135,6 +139,28 @@ const UserPayment = () => {
           <Text color="gray.800" fontSize="40px" fontWeight="400" textAlign="center" m='0'>PAYMENT</Text>
           <Flex w="full" gap="20px">
             <Box boxShadow="sm" w="50%">
+              {selectedOrder.length === 0 &&
+                <Box>
+                  <Alert
+                    status='warning'
+                    variant='subtle'
+                    flexDirection='column'
+                    alignItems='center'
+                    justifyContent='center'
+                    textAlign='center'
+                    height='200px'
+                  >
+                    <AlertIcon boxSize='40px' mr={0} />
+                    <AlertTitle mt={4} mb={1} fontSize='lg'>
+                      Pesanan kamu masih kosong
+                  </AlertTitle>
+                    <AlertDescription maxWidth='sm'>
+                      Silakan memilih barang dikeranjang yang akan dipesan terlebih dahulu{" "}
+                      <Link color="green" href="/user/cart">Lihat Keranjang</Link>
+                    </AlertDescription>
+                  </Alert>
+                </Box>
+              }
               {selectedOrder.map((crt, i) => (
                 <Flex my="4" key={i} gap="15px" w="full">
                   <Image width="200px" height="300px" alt={crt.nama} src={`/api/v1/product/product-photo/${crt._id}`} />
@@ -147,7 +173,7 @@ const UserPayment = () => {
                         DESKRIPSI PRODUK:{crt.description.substring(0, 30)}
                       </Text>
                       <Text>
-                        HARGA: {toFormatPrice(crt.price, 'Rp.')}
+                        HARGA: {toFormatPrice(crt.price, 'IDR', true)}
                       </Text>
                     </Box>
                     <Button onClick={() => onHapus(crt)} w="70px" colorScheme="red">

@@ -10,7 +10,6 @@ import { BsFillTelephoneFill } from 'react-icons/bs'
 
 const AdminDashboard = () => {
   const [auth] = useAuth();
-  console.log('auth', auth)
   return (
 
     <LayoutAdmin>

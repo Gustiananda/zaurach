@@ -56,7 +56,6 @@ const AdminDetailCustomer = () => {
   };
 
   useEffect(() => {
-    console.log('id', id)
     if (id) {
       getListCustomer(id)
     }

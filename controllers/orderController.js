@@ -2,6 +2,13 @@ import productModel from "../models/productModel.js";
 import orderModel from "../models/orderModel.js";
 import fs from "fs";
 import mongoose from "mongoose";
+import { generatePDFReport } from "../helpers/cetak.js";
+import { toFormatPrice } from "../helpers/currency.js";
+import moment from 'moment'
+import path from 'path';
+
+let __dirname = path.resolve();
+
 /**
  * Create Orders Controller
  * @param {*} req 
@@ -87,14 +94,13 @@ export const createOrderController = async (req, res) => {
  */
 export const getListOrderByBuyer = async (req, res) => {
   try {
-    console.log('req', req.user)
     const orders = await orderModel.find({
       buyer: new mongoose.Types.ObjectId(req.user._id),
-    }).populate({
+    }).select("-payment").populate({
       path: 'items.products',
-      select: 'nama photo',
+      select: 'nama',
     }).sort({ createdAt: -1 });
-    console.log('orders', orders)
+    // console.log('orders', orders)
     return res.send({
       success: true,
       data: orders,
@@ -117,12 +123,11 @@ export const getListOrderByBuyer = async (req, res) => {
  */
 export const getListAllOrder = async (req, res) => {
   try {
-    const orders = await orderModel.find({}).populate({
+    const orders = await orderModel.find().select("-payment").populate({
       path: 'items.products',
-      select: 'nama photo',
-    }).populate({path:'buyer', select:'nama'})
+      select: 'nama',
+    }).populate({ path: 'buyer', select: 'nama' })
       .sort({ createdAt: -1 });
-    console.log('orders', orders)
     return res.send({
       success: true,
       data: orders,
@@ -142,7 +147,7 @@ export const getListAllOrder = async (req, res) => {
 export const orderPhotoController = async (req, res) => {
   try {
     const product = await orderModel.findById(req.params.pid).select("payment");
-    console.log(product)
+    // console.log(product)
     if (product.payment.data) {
       res.set("Content-type", product.payment.contentType);
       return res.status(200).send(product.payment.data);
@@ -217,4 +222,56 @@ export const getChangeStatusOrder = async (req, res) => {
   }
 };
 
+
+export const printReport = async (
+  req,
+  res,
+) => {
+  try {
+    const orders = await orderModel.find().select("-payment").populate({
+      path: 'items.products',
+      select: 'nama',
+    }).populate({ path: 'buyer', select: 'nama' })
+      .sort({ createdAt: -1 });
+
+    let temp = []
+    let count = 0
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        count++;
+        temp.push([
+          count,
+          moment(order.createdAt).format('dddd'),
+          moment(order.createdAt).format('DD MMM YYYY'),
+          order.buyer.nama,
+          item.products.nama,
+          item.quantity,
+          toFormatPrice(item.realPrice, 'IDR'),
+          order.address,
+          order.status,
+        ])
+      });
+    })
+
+    const pathFile = `uploads/pdf/${new Date()
+      .getTime()
+      .toString()}-report.pdf`;
+
+    await generatePDFReport(temp, pathFile);
+
+    await delay(2000);
+    console.log('pathFile', pathFile)
+
+    return res.sendFile(pathFile, { root: path.join(__dirname) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error,
+      message: "Error print report",
+    });
+  }
+};
+
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

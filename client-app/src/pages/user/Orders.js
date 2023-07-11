@@ -20,7 +20,6 @@ const UserOrders = () => {
   const getOrders = async () => {
     try {
       const { data } = await axios.get("/api/v1/order/get-by-buyer");
-      console.log('data', data)
       setOrders(data.data);
     } catch (error) {
       console.log(error);

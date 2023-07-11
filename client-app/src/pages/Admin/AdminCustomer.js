@@ -29,7 +29,19 @@ import toast from "react-hot-toast";
 const AdminCustomer = () => {
   const [auth] = useAuth();
   const [data, setData] = useState([])
+  const [search, setSearch] = useState('')
 
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value)
+  }
+
+  const filterCustomer = () => {
+    if (search) {
+      let newData = data.filter((dt) => dt.nama.toLowerCase().includes(search.toLowerCase()))
+      return newData
+    }
+    return data
+  }
 
   const getListCustomer = async () => {
     try {
@@ -106,13 +118,12 @@ const AdminCustomer = () => {
           <Box>
             <Flex w='full' justifyContent='flex-end' my="4">
               <Box>
-                <FormLabel>Cari nama</FormLabel>
+                <FormLabel>Cari nama customer</FormLabel>
                 <InputGroup w='500px' size='md'>
-                  <Input placeholder='Cari nama...' />
+                  <Input onChange={onChangeSearch} value={search} placeholder='Cari nama customer...' />
                   <InputRightElement>
                     <IconButton
                       aria-label='cari'
-                      // onClick={handleClick}
                       icon={<Search2Icon />}
                     />
                   </InputRightElement>
@@ -124,9 +135,8 @@ const AdminCustomer = () => {
                 getListCustomer={getListCustomer}
                 // handleChangeStatus={handleChangeStatus}
                 columns={columns}
-                data={data}
+                data={filterCustomer()}
               />
-              ;
             </Box>
           </Box>
         </Box>

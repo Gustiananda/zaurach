@@ -8,6 +8,7 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import cors from "cors";
 import productRoutes from "./routes/productRoutes.js";
 import orderRouter from "./routes/orderRoute.js";
+import fs from 'fs'
 //configure env
 dotenv.config();
 
@@ -22,6 +23,13 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+const folders = ['uploads/pdf'];
+for (const folder of folders) {
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder, { recursive: true });
+  }
+}
+
 //routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
@@ -31,6 +39,8 @@ app.use("/api/v1/order", orderRouter);
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");
 });
+// Set Public Folder
+app.use('/uploads/pdf', express.static('uploads/pdf'));
 
 //PORT
 const PORT = process.env.PORT || 8080;

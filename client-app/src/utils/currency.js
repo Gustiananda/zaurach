@@ -9,9 +9,8 @@ export const toFormatPrice = (
   if (Number.isNaN(parsedNumber)) return '';
   const locale = currency === 'IDR' ? 'id-ID' : 'en-US';
   let currencyText = currency ?? '';
-  // let result = new Intl.NumberFormat(locale).format(parsedNumber);
-  return `${currencyText} ${new Intl.NumberFormat(locale).format(parsedNumber)}`;
-  // return result;
+  let result = new Intl.NumberFormat(locale).format(parsedNumber);
+  return withTextCurrency ? `${currencyText} ${new Intl.NumberFormat(locale).format(parsedNumber)}` : result
 };
 
 // Convert string price format into number

@@ -25,13 +25,12 @@ const AdminDetailProduk = () => {
   const getDetailProduct = async (id) => {
     try {
       const { data } = await axios.get(`/api/v1/product/product-detail/${id}`);
-      console.log('data', data)
       if (data?.success) {
         setData({
           id: data.products._id,
           nama: data.products.nama,
           deskripsi: data.products.description,
-          harga: toFormatPrice(data.products.price),
+          harga: toFormatPrice(data.products.price, 'IDR', true),
           kategori: data.products.category.nama,
           jumlah: data.products.quantity,
         });

@@ -41,7 +41,6 @@ const CreateProduct = () => {
   const getDetailProduct = async (id) => {
     try {
       const { data } = await axios.get(`/api/v1/product/product-detail/${id}`);
-      console.log('data', data)
       if (data?.success) {
         setNama(data.products.nama);
         setDescription(data.products.description);
@@ -121,8 +120,6 @@ const CreateProduct = () => {
   };
 
   const thumbs = () => {
-    console.log('photo', photo)
-    console.log('action', action)
     if (action === 'edit' && photo === undefined) {
       return <Box>
         <Image

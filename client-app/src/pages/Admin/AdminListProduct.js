@@ -31,6 +31,19 @@ import toast from "react-hot-toast";
 const AdminListProduct = () => {
   const [auth] = useAuth();
   const [data, setData] = useState([])
+  const [search, setSearch] = useState('')
+
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value)
+  }
+
+  const filterProduct = () => {
+    if (search) {
+      let newData = data.filter((dt) => dt.nama.toLowerCase().includes(search.toLowerCase()))
+      return newData
+    }
+    return data
+  }
 
   const columns = useMemo(
     () => [
@@ -86,7 +99,7 @@ const AdminListProduct = () => {
           id: product._id,
           nama: product.nama,
           deskripsi: product.description.substring(0, 30),
-          harga: toFormatPrice(product.price),
+          harga: toFormatPrice(product.price, 'IDR', true),
           kategori: product.category.nama,
           jumlah: product.quantity,
           photo: product._id,
@@ -117,9 +130,9 @@ const AdminListProduct = () => {
                 </Button>
               </Link>
               <Box>
-                <FormLabel>Cari nama</FormLabel>
+                <FormLabel>Cari nama produk</FormLabel>
                 <InputGroup w='500px' size='md'>
-                  <Input placeholder='Cari nama...' />
+                  <Input onChange={onChangeSearch} value={search} placeholder='Cari nama produk...' />
                   <InputRightElement>
                     <IconButton
                       aria-label='cari'
@@ -135,7 +148,7 @@ const AdminListProduct = () => {
                 getAllProducts={getAllProducts}
                 // handleChangeStatus={handleChangeStatus}
                 columns={columns}
-                data={data}
+                data={filterProduct()}
               />
               ;
             </Box>

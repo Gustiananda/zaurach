@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { Checkbox } from "@chakra-ui/checkbox";
 import { Image } from "@chakra-ui/image";
-import { Box, Center, Flex, HStack, Text, VStack } from "@chakra-ui/layout";
+import { Box, Center, Flex, HStack, Link, Text, VStack } from "@chakra-ui/layout";
 import React, { useState } from "react";
 import AppTemplate from "../../components/AppTemplate";
 import Layout, { LayoutAdmin } from "../../components/layout/Layout";
@@ -12,6 +12,7 @@ import { useSelectedOrder } from "../../context/selectedOrder";
 import { toFormatPrice } from "../../utils/currency";
 import { useNavigate } from "react-router-dom";
 import { GiConsoleController } from "react-icons/gi";
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from "@chakra-ui/alert";
 
 const CartUser = () => {
   const [auth] = useAuth();
@@ -23,7 +24,6 @@ const CartUser = () => {
   const onLanjut = () => {
     // console.log('lisCartSelected', lisCartSelected)
     setSelectedOrder(lisCartSelected)
-    console.log('lisCartSelected', lisCartSelected)
     navigate("/user/paymant")
   }
 
@@ -35,11 +35,11 @@ const CartUser = () => {
       }
     })
     setCart(newData)
+    localStorage.setItem("cart", JSON.stringify(newData));
     // setSelectedOrder([])
   }
 
   const chekclist = (crt) => {
-    console.log('crt', crt)
     let newData = lisCartSelected;
     let idExistData = newData.map((dt) => dt._id)
     if (idExistData.includes(crt._id)) {
@@ -66,6 +66,26 @@ const CartUser = () => {
               </Button>
             </Flex>
             <VStack spacing={6} mt="10">
+              {cart.length === 0 &&
+                <Alert
+                  status='info'
+                  variant='subtle'
+                  flexDirection='column'
+                  alignItems='center'
+                  justifyContent='center'
+                  textAlign='center'
+                  height='200px'
+                >
+                  <AlertIcon boxSize='40px' mr={0} />
+                  <AlertTitle mt={4} mb={1} fontSize='lg'>
+                    Keranjang kamu masih kosong
+                </AlertTitle>
+                  <AlertDescription maxWidth='sm'>
+                    Silakan memilih barang untuk dimasukan kedalam keranjang terlebih dahulu{" "}
+                    <Link color="green" href="/">Lihat Barang</Link>
+                  </AlertDescription>
+                </Alert>
+              }
               {cart.map((crt, i) => (
                 <Flex boxShadow="md" key={i} gap="15px" w="full">
                   <Image width="200px" height="300px" alt={crt.nama} src={`/api/v1/product/product-photo/${crt._id}`} />
@@ -74,7 +94,7 @@ const CartUser = () => {
                       NAMA PRODUK: {crt.nama}
                     </Text>
                     <Text>
-                      HARGA: {toFormatPrice(crt.price, 'Rp.')}
+                      HARGA: {toFormatPrice(crt.price, 'IDR', true)}
                     </Text>
                     <Text>
                       DESKRIPSI PRODUK:{crt.description.substring(0, 30)}

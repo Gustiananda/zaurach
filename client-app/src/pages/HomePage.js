@@ -10,8 +10,11 @@ import { Box, VStack, Text, chakra, Icon, Flex, Tooltip, Button, Image } from '@
 import { toFormatPrice } from "../utils/currency";
 import { FiShoppingCart } from 'react-icons/fi';
 import { AiOutlineEye } from "react-icons/ai";
+import { useAuth } from "../context/auth";
 
 const HomePage = () => {
+  const [auth] = useAuth();
+  const userType = auth.user?.role === 1 ? 'admin' : 'user';
   const navigate = useNavigate();
   const [cart, setCart] = useCart();
   const [products, setProducts] = useState();
@@ -201,21 +204,23 @@ const HomePage = () => {
                     {p.description.substring(0, 60)}...
                   </Text>
                   <VStack spacing={2} w="full">
-                    <Button
-                      w="full"
-                      colorScheme="green"
-                      onClick={() => {
-                        setCart([...cart, p]);
-                        localStorage.setItem(
-                          "cart",
-                          JSON.stringify([...cart, p])
-                        );
-                        toast.success("Item berhasil dimasukan keranjang");
-                      }}
-                      rightIcon={<FiShoppingCart />}
-                    >
-                      Add to cart
-                    </Button>
+                    {userType === 'user' &&
+                      <Button
+                        w="full"
+                        colorScheme="green"
+                        onClick={() => {
+                          setCart([...cart, p]);
+                          localStorage.setItem(
+                            "cart",
+                            JSON.stringify([...cart, p])
+                          );
+                          toast.success("Item berhasil dimasukan keranjang");
+                        }}
+                        rightIcon={<FiShoppingCart />}
+                      >
+                        Add to cart
+                  </Button>
+                    }
                     <Button w="full"
                       onClick={() => navigate(`/product/${p.slug}`)}
                       colorScheme='blue'

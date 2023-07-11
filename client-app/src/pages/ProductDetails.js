@@ -2,10 +2,20 @@ import React, { useState, useEffect } from "react";
 import Layout from "../components/layout/Layout";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/cart";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/auth";
+import { List, ListItem, Text } from "@chakra-ui/layout";
+import { toFormatPrice } from "../utils/currency";
+
+
 const ProductDetails = () => {
   const params = useParams();
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [cart, setCart] = useCart();
+  const [auth] = useAuth();
+  const userType = auth.user?.role === 1 ? 'admin' : 'user';
 
   //initial detail
   useEffect(() => {
@@ -50,13 +60,42 @@ const ProductDetails = () => {
         </div>
         <div className="col-md-6">
           <h1 className="text-center">Product Details</h1>
-          <h5>Nama :</h5> {product.nama}
-          <h5>Deskripsi :</h5> {product.description}
-          <h5>Harga :</h5>Rp.
-          {product.price}
-          <h5>Kategori :</h5>
-          <h6>{product.category?.nama}</h6>
-          <button class="btn btn-secondary ms-1">Add to cart</button>
+          <List padding="0" spacing={1}>
+            <ListItem>
+              <Text as={'span'} fontSize="22px" fontWeight={'bold'}>
+                Nama:
+              </Text>{' '}
+              <Text as={'span'} fontSize="24px">{product.nama}</Text>
+            </ListItem>
+            <ListItem>
+              <Text as={'span'} fontSize="22px" fontWeight={'bold'}>
+                Harga:
+              </Text>{' '}
+              <Text as={'span'} fontSize="24px">Rp.  {toFormatPrice(product.price, 'IDR')}</Text>
+            </ListItem>
+            <ListItem>
+              <Text as={'span'} fontSize="22px" fontWeight={'bold'}>
+                Kategori:
+              </Text>{' '}
+              <Text as={'span'} fontSize="24px">{product.category?.nama}</Text>
+            </ListItem>
+            <ListItem>
+              <Text as={'span'} fontSize="22px" fontWeight={'bold'}>
+                Deskripsi:
+              </Text>{' '}
+              <Text as={'span'} fontSize="24px">{product.description}</Text>
+            </ListItem>
+          </List>
+          {userType === 'user' && (
+            <button onClick={() => {
+              setCart([...cart, product]);
+              localStorage.setItem(
+                "cart",
+                JSON.stringify([...cart, product])
+              );
+              toast.success("Item berhasil dimasukan keranjang");
+            }} class="btn btn-secondary ms-1">Add to cart</button>
+          )}
           <hr />
         </div>
         <div className="row container">
@@ -76,8 +115,16 @@ const ProductDetails = () => {
                   <h5 class="card-title"> {p.nama}</h5>
                   <p class="card-text">{p.description.substring(0, 30)}...</p>
                   <p class="card-text">Rp. {p.price}</p>
-
-                  <button class="btn btn-secondary ms-1">Add to cart</button>
+                  {userType === 'user' && (
+                    <button onClick={() => {
+                      setCart([...cart, p]);
+                      localStorage.setItem(
+                        "cart",
+                        JSON.stringify([...cart, p])
+                      );
+                      toast.success("Item berhasil dimasukan keranjang");
+                    }} class="btn btn-secondary ms-1">Add to cart</button>
+                  )}
                 </div>
               </div>
             ))}

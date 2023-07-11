@@ -18,7 +18,7 @@ import { useTable, usePagination } from 'react-table';
 import { Box, Flex, Link, Text } from "@chakra-ui/layout";
 import { NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper } from "@chakra-ui/number-input";
 import { Select } from "@chakra-ui/select";
-import { FormLabel } from "@chakra-ui/form-control";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { toFormatPrice } from "../../utils/currency";
 import { Image } from "@chakra-ui/image";
@@ -27,21 +27,33 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import moment from "moment";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/modal";
 
 
 const AdminListShipping = () => {
   const [auth] = useAuth();
   const [data, setData] = useState([])
+  const [search, setSearch] = useState('')
+
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value)
+  }
+
+  const filterCustomer = () => {
+    if (search) {
+      let newData = data.filter((dt) => dt.buyer.toLowerCase().includes(search.toLowerCase()))
+      return newData
+    }
+    return data
+  }
 
   const getOrders = async () => {
     try {
       const { data } = await axios.get("/api/v1/order/get-by-admin");
-      console.log('data',data)
-      let temp  = []
+      let temp = []
       data.data.forEach((order, i) => {
-        console.log('order',order)
         temp.push({
-          no: i+1,
+          no: i + 1,
           id: order._id,
           items: order.items,
           status: order.status,
@@ -49,6 +61,7 @@ const AdminListShipping = () => {
           date: moment(order.createdAt).format("DD-MM-YYYY"),
           payment: order.paymentType === "cod" ? "COD" : order.status === "not process" ? "On Checking" : "Success",
           photo: order._id,
+          changeStatusOrder: order._id,
         })
       })
       setData(temp);
@@ -87,21 +100,21 @@ const AdminListShipping = () => {
         Header: 'Payment',
         accessor: 'payment',
       },
-      // {
-      //   Header: 'Quantity',
-      //   accessor: 'quantity',
-      // },
       {
         Header: 'Photo',
         accessor: 'photo',
       },
+      {
+        Header: 'Change Status Order',
+        accessor: 'changeStatusOrder',
+      }
     ],
     []
   );
 
-  useEffect(()=> {
+  useEffect(() => {
     getOrders()
-  },[])
+  }, [])
 
   return (
     <LayoutAdmin>
@@ -111,11 +124,11 @@ const AdminListShipping = () => {
             SHIPPING
           </Text>
           <Box>
-            <Flex w='full' justifyContent='space-between' alignItems="center">
+            <Flex w='full' justifyContent='flex-end' my="4">
               <Box>
                 <FormLabel>Cari nama buyer</FormLabel>
                 <InputGroup w='500px' size='md'>
-                  <Input placeholder='Cari nama...' />
+                  <Input onChange={onChangeSearch} value={search} placeholder='Cari nama buyer...' />
                   <InputRightElement>
                     <IconButton
                       aria-label='cari'
@@ -131,7 +144,8 @@ const AdminListShipping = () => {
                 // getListProduk={getListProduk}
                 // handleChangeStatus={handleChangeStatus}
                 columns={columns}
-                data={data}
+                data={filterCustomer()}
+                getOrders={getOrders}
               />
             </Box>
           </Box>
@@ -148,6 +162,7 @@ export default AdminListShipping;
 function CustomTable({
   columns,
   data,
+  getOrders,
   // handleChangeStatus,
   // getListProduk,
 }) {
@@ -181,40 +196,40 @@ function CustomTable({
   );
   const [selectedId, setSelectedId] = useState(undefined);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [formChangeStatus, setFormChangeStatus] = useState({
+    id: '',
+    status: ''
+  })
 
-  const detailPage = (id) => {
-    // console.log('id', id);
-    // Router.push(`/penjual/produk/${id}`);
-  };
-
-  const handleDeleteProduk = async (produkId) => {
-    // const res = await ApiDeleteProdukPenjual(produkId);
-    // if (res.status === 200) {
-    //   showToast({
-    //     title: 'Berhasil',
-    //     message: res.data.message,
-    //     type: 'success',
-    //   });
-    //   getListProduk();
-    // } else {
-    //   showToast({
-    //     title: 'Error',
-    //     message: res.data.message,
-    //     type: 'error',
-    //   });
-    // }
-    onCloseDelete()
-  };
-
-  const onOpenDelete = (id) => {
-    setSelectedId(id);
+  const onOpenChangeStatus = (order) => {
+    setFormChangeStatus({
+      id: order.id,
+      status: order.status
+    })
     onOpen()
   }
 
-  const onCloseDelete = (id) => {
-    setSelectedId(undefined);
+  const onChangeStatus = async (e) => {
+    // api
+    e.preventDefault()
+    try {
+      const { data } = await axios.post("/api/v1/order/change-status", {
+        id: formChangeStatus.id,
+        status: formChangeStatus.status
+      });
+      if (data?.success) {
+        toast.success(`Success Change Status!`);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+    }
     onClose()
+    getOrders();
   }
+
   // Render the UI for your table
   return (
     <>
@@ -257,15 +272,14 @@ function CustomTable({
                   } else if (cell.column.Header === 'Photo') {
                     return (
                       <Td
-                        onClick={() => detailPage(row.original.id)}
                         {...cell.getCellProps()}
                       >
                         {row.original.payment === null ? "COD" : <Image
-                            src={`/api/v1/order/get-payment-photo/${row.original.id}`}
-                            alt="Bukti Pembayaran"
-                            width="100"
-                            height="200"
-                          />}
+                          src={`/api/v1/order/get-payment-photo/${row.original.id}`}
+                          alt="Bukti Pembayaran"
+                          width="100"
+                          height="200"
+                        />}
                       </Td>
                     );
                   } else if (cell.column.Header === 'Status') {
@@ -273,7 +287,7 @@ function CustomTable({
                       <Td
                         {...cell.getCellProps()}
                       >
-                       <Text textTransform="capitalize" fontWeight="700" color={row.original.status === "not process" ? "red" : row.original.status === "process" ? "orange" : "green"}>{row.original.status}</Text>
+                        <Text textTransform="capitalize" fontWeight="700" color={row.original.status === "not process" ? "red" : row.original.status === "process" ? "orange" : "green"}>{row.original.status}</Text>
                       </Td>
                     );
                   } else if (cell.column.Header === 'Payment') {
@@ -281,10 +295,18 @@ function CustomTable({
                       <Td
                         {...cell.getCellProps()}
                       >
-                       <Text textTransform="capitalize" fontWeight="700" color={row.original.status === "not process" ? "red" : row.original.status === "process" ? "orange" : "green"}>{row.original.payment}</Text>
+                        <Text textTransform="capitalize" fontWeight="700" color={row.original.status === "not process" ? "red" : row.original.status === "process" ? "orange" : "green"}>{row.original.payment}</Text>
                       </Td>
                     );
-                  }  else {
+                  } else if (cell.column.Header === 'Change Status Order') {
+                    return (
+                      <Td
+                        {...cell.getCellProps()}
+                      >
+                        <Button colorScheme="blue" onClick={() => onOpenChangeStatus(row.original)}>Change status</Button>
+                      </Td>
+                    )
+                  } else {
                     return (
                       <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                     );
@@ -382,13 +404,45 @@ function CustomTable({
           </Tooltip>
         </Flex>
       </Flex>
-      <ModalConfirm
-        onClose={onCloseDelete}
-        isOpen={isOpen}
-        title="Delete Produk"
-        message="Apakah kamu yakin menghapus produk ?"
-        onSubmit={handleDeleteProduk}
-      />
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            Change Status Order
+            </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel>Status</FormLabel>
+              <Select
+                bordered={false}
+                placeholder="Pilih Status"
+                size="lg"
+                className="form-select mb-3"
+                onChange={(e) => {
+                  setFormChangeStatus({
+                    ...formChangeStatus,
+                    status: e.target.value
+                  });
+                }}
+              >
+                <option value="not process">Not Process</option>
+                <option value="process">Process</option>
+                <option value="selesai">selesai</option>
+              </Select>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter gap='2'>
+            <Button onClick={onChangeStatus} colorScheme='green'>
+              Ya, Lanjut
+            </Button>
+            <Button colorScheme='red' onClick={onClose}>
+              Batal
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
     </>
   );
 }

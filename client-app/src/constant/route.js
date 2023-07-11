@@ -1,11 +1,13 @@
 import { IconType } from 'react-icons';
 import { AiOutlineBarChart, AiOutlineMedicineBox } from 'react-icons/ai';
-import { BiBox } from 'react-icons/bi';
-import { BsShop } from 'react-icons/bs';
+import { BiBox, BiUserCircle, BiCategoryAlt } from 'react-icons/bi';
+import { BsCartCheck } from 'react-icons/bs';
 import { CgProfile, CgUserList } from 'react-icons/cg';
 import { FiHome, FiUsers } from 'react-icons/fi';
 import { GiShoppingCart } from 'react-icons/gi';
 import { RiDashboardLine } from 'react-icons/ri';
+import { MdPayment, MdOutlineLocalShipping } from 'react-icons/md'
+import { TbPhotoSensor } from 'react-icons/tb'
 
 const ROUTING_PAGES = {
   admin: [
@@ -18,7 +20,7 @@ const ROUTING_PAGES = {
     {
       label: 'Customer',
       href: '/admin/customer',
-      icon: RiDashboardLine,
+      icon: BiUserCircle,
       type: 'parent',
     },
     {
@@ -36,19 +38,19 @@ const ROUTING_PAGES = {
     {
       label: 'Category',
       href: '/admin/create-category',
-      icon: GiShoppingCart,
+      icon: BiCategoryAlt,
       type: 'parent',
     },
-    {
-      label: 'Orders',
-      href: '/admin/orders',
-      icon: RiDashboardLine,
-      type: 'parent',
-    },
+    // {
+    //   label: 'Orders',
+    //   href: '/admin/orders',
+    //   icon: RiDashboardLine,
+    //   type: 'parent',
+    // },
     {
       label: 'Shipping',
       href: '/admin/shipping',
-      icon: GiShoppingCart,
+      icon: MdOutlineLocalShipping,
       type: 'parent',
     },
     {
@@ -74,25 +76,25 @@ const ROUTING_PAGES = {
     {
       label: 'Customer',
       href: '/user/customer',
-      icon: RiDashboardLine,
+      icon: BiUserCircle,
       type: 'parent',
     },
     {
       label: 'Payment',
       href: '/user/paymant',
-      icon: AiOutlineMedicineBox,
+      icon: MdPayment,
       type: 'parent',
     },
     {
       label: 'Bukti Payment',
       href: '/user/bukti-paymant',
-      icon: AiOutlineMedicineBox,
+      icon: TbPhotoSensor,
       type: 'child',
     },
     {
       label: 'Orders',
       href: '/user/orders',
-      icon: RiDashboardLine,
+      icon: BsCartCheck,
       type: 'parent',
     },
   ]

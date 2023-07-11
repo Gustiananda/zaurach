@@ -54,9 +54,9 @@ const HeaderV2 = () => {
       <Flex alignItems="center" gap="3" px="3">
         <Select onChange={handleLogout} placeholder='Pilih User'>
           <option value='admin'>Admin</option>
-          <option value='user'>User</option>
+          <option value='user'>Customer</option>
         </Select>
-        {userType === 'user' &&         <Box>
+        {userType === 'user' && <Box>
           <Tooltip
             label="Cart"
             bg="white"
@@ -68,7 +68,7 @@ const HeaderV2 = () => {
             </chakra.a>
           </Tooltip>
         </Box>
-}
+        }
       </Flex>
     </Flex>
   )

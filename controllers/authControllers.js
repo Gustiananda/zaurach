@@ -268,9 +268,7 @@ export const getListCustomer = async (req, res) => {
 export const getDetailCustomer = async (req, res) => {
   try {
     const { id } = req.params
-    console.log('id', id)
     const user = await userModel.findById(new mongoose.Types.ObjectId(id)).select("nama email phone address isVerify");
-    console.log('user', user)
     res.status(200).send({
       success: true,
       message: "Success get detail customer",

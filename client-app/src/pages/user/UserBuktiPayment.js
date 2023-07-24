@@ -1,5 +1,9 @@
 import { Button } from "@chakra-ui/button";
-import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/form-control";
+import {
+  FormControl,
+  FormHelperText,
+  FormLabel,
+} from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Box, Center, Flex, Text } from "@chakra-ui/layout";
 import { Textarea } from "@chakra-ui/textarea";
@@ -11,9 +15,7 @@ import { Image } from "@chakra-ui/image";
 import { useAuth } from "../../context/auth";
 import { useSelectedOrder } from "../../context/selectedOrder";
 import axios from "axios";
-import {
-  createStandaloneToast,
-} from '@chakra-ui/react';
+import { createStandaloneToast } from "@chakra-ui/react";
 import toast from "react-hot-toast";
 
 const UserBuktiPayment = () => {
@@ -26,24 +28,24 @@ const UserBuktiPayment = () => {
     address: auth?.user?.adddress,
     phone: auth?.user?.phone,
     nama: auth?.user?.nama,
-  })
+  });
 
   const onChangeForm = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const gotoPesananSaya = () => {
-    navigate('/user/paymant')
-  }
+    navigate("/user/orders");
+  };
 
   const postCreateOrder = async (e) => {
     e.preventDefault();
     try {
-      let idProduct = selectedOrder.map((prdct) => prdct._id)
-      idProduct = JSON.stringify(idProduct)
+      let idProduct = selectedOrder.map((prdct) => prdct._id);
+      idProduct = JSON.stringify(idProduct);
       const orderData = new FormData();
       orderData.append("nama", form.nama);
       orderData.append("address", form.address);
@@ -56,11 +58,11 @@ const UserBuktiPayment = () => {
         toast.error(data?.message);
       } else {
         toastChakra.toast({
-          status: 'success',
+          status: "success",
           duration: 5000,
-          title: 'Berhasil',
+          title: "Berhasil",
           description: "Berhasil membuat pesanan",
-          position: 'bottom-right',
+          position: "bottom-right",
         });
         navigate("/user/orders");
       }
@@ -80,11 +82,10 @@ const UserBuktiPayment = () => {
         photo
       )
     ) {
-      return true
+      return true;
     }
-    return false
-  }
-
+    return false;
+  };
 
   const thumbs = () => {
     if (URL) {
@@ -96,8 +97,8 @@ const UserBuktiPayment = () => {
             src={url}
             // width='full'
             // height='full'
-            objectFit='contain'
-            objectPosition='center'
+            objectFit="contain"
+            objectPosition="center"
           />
           {/* <Button w='full' size='xs' onClick={() => handleRemoveImages(key)}>
               Hapus
@@ -107,35 +108,62 @@ const UserBuktiPayment = () => {
     }
   };
 
-
   return (
     <LayoutAdmin>
       <AppTemplate>
-        <Box p='3' w="full">
+        <Box p="3" w="full">
           <Flex w="full">
             <Button onClick={gotoPesananSaya} colorScheme="blue">
               PESANAN SAYA
             </Button>
             {/* <Center> */}
             <Box maxW="1200px" w="full">
-              <Text color="gray.800" fontSize="40px" fontWeight="400" textAlign="center" m='0'>BUKTI PAYMENT</Text>
-              <Box w="full" my='3'>
+              <Text
+                color="gray.800"
+                fontSize="40px"
+                fontWeight="400"
+                textAlign="center"
+                m="0"
+              >
+                BUKTI PAYMENT
+              </Text>
+              <Box w="full" my="3">
                 <form>
                   <FormControl my="2">
                     <FormLabel>Nama</FormLabel>
-                    <Input name="nama" value={form.nama} onChange={onChangeForm} placeholder="Masukan nama" type='text' />
+                    <Input
+                      name="nama"
+                      value={form.nama}
+                      onChange={onChangeForm}
+                      placeholder="Masukan nama"
+                      type="text"
+                    />
                   </FormControl>
                   <FormControl my="2">
                     <FormLabel>Address</FormLabel>
-                    <Textarea name="address" value={form.address} onChange={onChangeForm} placeholder="Masukan alamat" />
+                    <Textarea
+                      name="address"
+                      value={form.address}
+                      onChange={onChangeForm}
+                      placeholder="Masukan alamat"
+                    />
                   </FormControl>
                   <FormControl my="2">
                     <FormLabel>Phone</FormLabel>
-                    <Input name="phone" value={form.phone} onChange={onChangeForm} placeholder="Masukan nomor telfon" type="number" />
+                    <Input
+                      name="phone"
+                      value={form.phone}
+                      onChange={onChangeForm}
+                      placeholder="Masukan nomor telfon"
+                      type="number"
+                    />
                   </FormControl>
                   <FormControl my="2">
                     <FormLabel>Upload Bukti</FormLabel>
-                    <label className="btn btn-primary col-md-12" style={{ height: '40px' }}>
+                    <label
+                      className="btn btn-primary col-md-12"
+                      style={{ height: "40px" }}
+                    >
                       {/* {photo ? photo.nama : "Upload Foto"} */}
                       Upload Bukti
                       <input
@@ -148,10 +176,19 @@ const UserBuktiPayment = () => {
                     </label>
                     {photo && <div className="my-3">{thumbs()}</div>}
                   </FormControl>
-                  <Text my="4" color="red">*Pastikan bukti-TF sesuai, jika tidak sesuai tidak akan diproses, silakan ulangi order</Text>
-                  <Button isDisabled={isDisabledBtn()} onClick={postCreateOrder} w="full" my="2" colorScheme="green">
+                  <Text my="4" color="red">
+                    *Pastikan bukti-TF sesuai, jika tidak sesuai tidak akan
+                    diproses, silakan ulangi order
+                  </Text>
+                  <Button
+                    isDisabled={isDisabledBtn()}
+                    onClick={postCreateOrder}
+                    w="full"
+                    my="2"
+                    colorScheme="green"
+                  >
                     ORDER
-              </Button>
+                  </Button>
                 </form>
               </Box>
             </Box>

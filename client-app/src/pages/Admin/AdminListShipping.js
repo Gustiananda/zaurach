@@ -57,7 +57,7 @@ const AdminListShipping = () => {
           id: order._id,
           items: order.items,
           status: order.status,
-          buyer: order.buyer.nama,
+          buyer: order.buyer.nama ?? "-",
           date: moment(order.createdAt).format("DD-MM-YYYY"),
           payment: order.paymentType === "cod" ? "COD" : order.status === "not process" ? "On Checking" : "Success",
           photo: order._id,
@@ -254,14 +254,16 @@ function CustomTable({
                       <Td {...cell.getCellProps()}>
                         {row.original.items.map((item, j) => (
                           <div key={j}>
-                            <p>{item.products.nama}</p>
+                            <p>{item.products?.nama ?? "-"}</p>
                             <p>
-                              <Image
-                                src={`/api/v1/product/product-photo/${item.products._id}`}
-                                alt={item.products.nama}
-                                width="100"
-                                height="200"
-                              />
+                              {item.products?._id &&
+                                <Image
+                                  src={`/api/v1/product/product-photo/${item.products._id}`}
+                                  alt={item.products?.nama ?? "-"}
+                                  width="100"
+                                  height="200"
+                                />
+                              }
                             </p>
                             <p>harga {item.realPrice}</p>
                             <p>jumlah {item.quantity}</p>

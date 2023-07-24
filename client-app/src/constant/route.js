@@ -1,45 +1,45 @@
-import { IconType } from 'react-icons';
-import { AiOutlineBarChart, AiOutlineMedicineBox } from 'react-icons/ai';
-import { BiBox, BiUserCircle, BiCategoryAlt } from 'react-icons/bi';
-import { BsCartCheck } from 'react-icons/bs';
-import { CgProfile, CgUserList } from 'react-icons/cg';
-import { FiHome, FiUsers } from 'react-icons/fi';
-import { GiShoppingCart } from 'react-icons/gi';
-import { RiDashboardLine } from 'react-icons/ri';
-import { MdPayment, MdOutlineLocalShipping } from 'react-icons/md'
-import { TbPhotoSensor } from 'react-icons/tb'
+import { IconType } from "react-icons";
+import { AiOutlineBarChart, AiOutlineMedicineBox } from "react-icons/ai";
+import { BiBox, BiUserCircle, BiCategoryAlt } from "react-icons/bi";
+import { BsCartCheck } from "react-icons/bs";
+import { CgProfile, CgUserList } from "react-icons/cg";
+import { FiHome, FiUsers } from "react-icons/fi";
+import { GiShoppingCart } from "react-icons/gi";
+import { RiDashboardLine } from "react-icons/ri";
+import { MdPayment, MdOutlineLocalShipping } from "react-icons/md";
+import { TbPhotoSensor } from "react-icons/tb";
 
 const ROUTING_PAGES = {
   admin: [
     {
-      label: 'Dashboard',
-      href: '/admin/dashboard',
+      label: "Dashboard",
+      href: "/admin/dashboard",
       icon: FiHome,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Customer',
-      href: '/admin/customer',
+      label: "Customer",
+      href: "/admin/customer",
       icon: BiUserCircle,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Product',
-      href: '/admin/produk',
+      label: "Product",
+      href: "/admin/produk",
       icon: BiBox,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Tambah Produk',
-      href: '/admin/produk/create',
+      label: "Tambah Produk",
+      href: "/admin/produk/create",
       icon: AiOutlineMedicineBox,
-      type: 'child',
+      type: "child",
     },
     {
-      label: 'Category',
-      href: '/admin/create-category',
+      label: "Category",
+      href: "/admin/create-category",
       icon: BiCategoryAlt,
-      type: 'parent',
+      type: "parent",
     },
     // {
     //   label: 'Orders',
@@ -48,16 +48,16 @@ const ROUTING_PAGES = {
     //   type: 'parent',
     // },
     {
-      label: 'Shipping',
-      href: '/admin/shipping',
+      label: "Shipping",
+      href: "/admin/shipping",
       icon: MdOutlineLocalShipping,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Report',
-      href: '/admin/statistik',
+      label: "Report",
+      href: "/admin/statistik",
       icon: AiOutlineBarChart,
-      type: 'parent',
+      type: "parent",
     },
     // {
     //   label: 'Profile',
@@ -68,37 +68,30 @@ const ROUTING_PAGES = {
   ],
   user: [
     {
-      label: 'Dashboard User',
-      href: '/user/dashboard',
+      label: "Dashboard User",
+      href: "/user/dashboard",
       icon: FiHome,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Customer',
-      href: '/user/customer',
+      label: "Customer",
+      href: "/user/customer",
       icon: BiUserCircle,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Payment',
-      href: '/user/paymant',
+      label: "Payment",
+      href: "/user/paymant",
       icon: MdPayment,
-      type: 'parent',
+      type: "parent",
     },
     {
-      label: 'Bukti Payment',
-      href: '/user/bukti-paymant',
+      label: "Bukti Payment",
+      href: "/user/bukti-paymant",
       icon: TbPhotoSensor,
-      type: 'child',
+      type: "child",
     },
-    {
-      label: 'Orders',
-      href: '/user/orders',
-      icon: BsCartCheck,
-      type: 'parent',
-    },
-  ]
-
+  ],
 };
 
-export { ROUTING_PAGES }
+export { ROUTING_PAGES };

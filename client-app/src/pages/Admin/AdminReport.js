@@ -40,7 +40,7 @@ const AdminReport = () => {
             hari: moment(order.createdAt).format('dddd'),
             tanggal: moment(order.createdAt).format('DD MMM YYYY'),
             nama: order.buyer.nama,
-            barang: item.products.nama,
+            barang: item.products?.nama ?? "-",
             qty: item.quantity,
             harga: toFormatPrice(item.realPrice, 'IDR', true),
             alamat: order.address,

@@ -244,7 +244,7 @@ export const printReport = async (
           moment(order.createdAt).format('dddd'),
           moment(order.createdAt).format('DD MMM YYYY'),
           order.buyer.nama,
-          item.products.nama,
+          item.products?.nama ?? "-",
           item.quantity,
           toFormatPrice(item.realPrice, 'IDR'),
           order.address,
